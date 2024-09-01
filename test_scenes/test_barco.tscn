@@ -1,0 +1,124 @@
+[gd_scene load_steps=12 format=3 uid="uid://cqs4kmccjc1jm"]
+
+[ext_resource type="Script" path="res://test_scenes/test_barco.gd" id="1_bdray"]
+[ext_resource type="Texture2D" uid="uid://dfpdwhtll8sal" path="res://(Old)Assets/Nivel0.png" id="1_e1d4a"]
+[ext_resource type="Texture2D" uid="uid://cbu3uh620cbpt" path="res://(Old)Assets/Nivel1.png" id="2_4qsei"]
+[ext_resource type="Texture2D" uid="uid://dmdms75ed571" path="res://(Old)Assets/Nivel2.png" id="3_22yaf"]
+[ext_resource type="Texture2D" uid="uid://pe840a7te1ko" path="res://(Old)Assets/Nivel3.png" id="4_qr8y4"]
+[ext_resource type="PackedScene" uid="uid://cfwip2phqds8y" path="res://test_scenes/test_player.tscn" id="5_vj0cq"]
+
+[sub_resource type="Animation" id="Animation_i1x0s"]
+resource_name = "hideNivel0"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Nivel0:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0666667, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_d416b"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Nivel0:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0ihwh"]
+_data = {
+"RESET": SubResource("Animation_d416b"),
+"hideNivel0": SubResource("Animation_i1x0s")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_853px"]
+size = Vector2(43, 171)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_4ndl1"]
+a = Vector2(190.631, -0.0886955)
+b = Vector2(-362.428, 0)
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_bdray")
+
+[node name="Nivel0" type="Sprite2D" parent="."]
+z_index = 6
+texture = ExtResource("1_e1d4a")
+
+[node name="Nivel1" type="Sprite2D" parent="."]
+z_index = 4
+texture = ExtResource("2_4qsei")
+
+[node name="Nivel2" type="Sprite2D" parent="."]
+z_index = 2
+texture = ExtResource("3_22yaf")
+
+[node name="Nivel3" type="Sprite2D" parent="."]
+texture = ExtResource("4_qr8y4")
+
+[node name="Nivel1_Interior_Area" type="Area2D" parent="."]
+z_index = 5
+position = Vector2(0, 730)
+metadata/_edit_group_ = true
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Nivel1_Interior_Area"]
+polygon = PackedVector2Array(-56, -85, 69, -89, 69, 23, 369, 18, 325, 343, 198, 652, 64, 782, -37, 781, -197, 654, -315, 363, -354, 16, -57, 24)
+
+[node name="Player" parent="." instance=ExtResource("5_vj0cq")]
+z_index = 5
+position = Vector2(4, 291)
+collision_layer = 2
+collision_mask = 2
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_0ihwh")
+}
+
+[node name="RigidosExtras" type="StaticBody2D" parent="."]
+position = Vector2(-164, 530)
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidosExtras"]
+z_index = 6
+position = Vector2(1.5, 2.5)
+shape = SubResource("RectangleShape2D_853px")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="RigidosExtras"]
+light_mask = 3
+visibility_layer = 3
+z_index = 6
+position = Vector2(360, 2.5)
+shape = SubResource("RectangleShape2D_853px")
+
+[node name="Stairs_0->1" type="Area2D" parent="."]
+position = Vector2(-269, 486)
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stairs_0->1"]
+z_index = 7
+position = Vector2(-11, 43)
+scale = Vector2(-0.372488, -1.85954)
+shape = SubResource("SegmentShape2D_4ndl1")
+
+[connection signal="body_entered" from="Nivel1_Interior_Area" to="." method="_on_nivel_1_interior_area_body_entered"]
+[connection signal="body_exited" from="Nivel1_Interior_Area" to="." method="_on_nivel_1_interior_area_body_exited"]
+[connection signal="body_entered" from="Stairs_0->1" to="." method="_on_stairs_01_body_entered"]
+[connection signal="body_exited" from="Stairs_0->1" to="." method="_on_stairs_01_body_exited"]
